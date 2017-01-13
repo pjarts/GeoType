@@ -15,7 +15,7 @@ export function which(bit) {
     return bit % 2 === 0 ? LON : LAT
 }
 
-export function getLastBit(bits, angle) {
+export function getLastBitIdx(bits, angle) {
     const bitLengthIsEven = bits.length % 2 === 0
     let lastBit = bits.length - 1
     if (bitLengthIsEven && angle === LON || !bitLengthIsEven && angle === LAT) {
@@ -27,7 +27,7 @@ export function getLastBit(bits, angle) {
 export function bitAdd(bits, value, angle) {
     const changeBit = value > 0 ? 1 : 0
     const dir = value > 0 ? 1 : -1
-    const lastBit = angle ? getLastBit(bits, angle) : bits.length - 1
+    const lastBit = angle ? getLastBitIdx(bits, angle) : bits.length - 1
     const step = angle ? 2 : 1
     let curBit = lastBit
     while (value && curBit >= 0) {

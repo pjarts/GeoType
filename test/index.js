@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import GeoType, { type, transform } from '../'
+import GeoType, { type, transform } from '../src'
 
 describe('Interface', () => {
     it('should be possible to convert from one type to another', () => {

@@ -1,11 +1,11 @@
 import { expect } from 'chai'
-import GeoType, { type, transform } from '../'
+import GeoType, { type, transform } from '../src'
 
-describe('Transform functions', function() {
+describe('Transform functions', () => {
 
-    describe('Move', function() {
-        var center = "spbpb"
-        var adjacent = {
+    describe('Move', () => {
+        const center = "spbpb"
+        const adjacent = {
             u0000: [1, 0],
             u0001: [1, 1],
             spbpc: [0, 1],
@@ -15,8 +15,8 @@ describe('Transform functions', function() {
             ezzzz: [0, -1],
             gbpbp: [1, -1]
         }
-        it('should return the geo box at the given relative position', function() {
-            for (var h in adjacent) {
+        it('should return the geo box at the given relative position', () => {
+            for (let h in adjacent) {
                 expect(GeoType(type.Base32)
                     .transform(transform.Move, adjacent[h])
                     .convert(center)
@@ -25,16 +25,36 @@ describe('Transform functions', function() {
         })
     })
 
-    describe('Spread', function() {
-        it('should return all geo boxes at the given positions', function() {
-            var center = 'sxbpbp'
-            var position = [[1, 0], [-1, 1], [-1, -1], [1, -1]]
-            var adjacent = ['u80000', 'sxbpbq', 'srzzzy', 'u2pbpb']
+    describe('Spread', () => {
+        it('should return all geo boxes at the given positions', () => {
+            const center = 'sxbpbp'
+            const position = [[1, 0], [-1, 1], [-1, -1], [1, -1]]
+            const adjacent = ['u80000', 'sxbpbq', 'srzzzy', 'u2pbpb']
             expect(GeoType(type.Base32)
                 .transform(transform.Spread, position)
                 .convert(center)
             ).to.deep.equal(adjacent)
         })
 
+    })
+
+    describe('Adjacent', () => {
+        it('should return all adjacent cells for a given cell', () => {
+            const center = 'spczzz'
+            const adjacent = [
+                'u01bpb',
+                'u04000',
+                'spfpbp',
+                'spfpbn',
+                'spczzy',
+                'spczzw',
+                'spczzx',
+                'u01bp8'
+            ]
+            expect(GeoType(type.Base32)
+                .transform(transform.Adjacent)
+                .convert(center)
+            ).to.deep.equal(adjacent)
+        })
     })
 })

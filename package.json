@@ -2,13 +2,16 @@
   "name": "geotype",
   "version": "1.0.0",
   "description": "Geographical location library for JavaScript",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register"
+    "test": "mocha --compilers js:babel-core/register",
+    "build": "babel src --out-dir dist",
+    "postinstall": "npm run build"
   },
   "author": "per@pjarts.se",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.18.0",
     "babel-core": "^6.21.0",
     "babel-preset-latest": "^6.16.0",
     "chai": "^3.5.0",
