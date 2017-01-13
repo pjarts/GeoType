@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import GeoType, { type, transform } from '../src'
+import GeoCell, { type, transform } from '../src'
 
 describe('Transform functions', () => {
 
@@ -17,7 +17,7 @@ describe('Transform functions', () => {
         }
         it('should return the geo box at the given relative position', () => {
             for (let h in adjacent) {
-                expect(GeoType(type.Base32)
+                expect(GeoCell(type.Base32)
                     .transform(transform.Move, adjacent[h])
                     .convert(center)
                 ).to.equal(h)
@@ -30,7 +30,7 @@ describe('Transform functions', () => {
             const center = 'sxbpbp'
             const position = [[1, 0], [-1, 1], [-1, -1], [1, -1]]
             const adjacent = ['u80000', 'sxbpbq', 'srzzzy', 'u2pbpb']
-            expect(GeoType(type.Base32)
+            expect(GeoCell(type.Base32)
                 .transform(transform.Spread, position)
                 .convert(center)
             ).to.deep.equal(adjacent)
@@ -51,7 +51,7 @@ describe('Transform functions', () => {
                 'spczzx',
                 'u01bp8'
             ]
-            expect(GeoType(type.Base32)
+            expect(GeoCell(type.Base32)
                 .transform(transform.Adjacent)
                 .convert(center)
             ).to.deep.equal(adjacent)

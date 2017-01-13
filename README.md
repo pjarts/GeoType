@@ -1,4 +1,4 @@
-GeoType
+GeoCell
 =======
 
 JavaScript geographical position encoder/decoder library
@@ -31,20 +31,20 @@ Transforms data from a decoded type to get adjacent geohashes etc.
 
 ### Move
 Move to a cell at a given relative position
-`GeoType(type.Integer).transform(transform.Move, [1, 1]).convert(27098558)` move to the cell north east of 27098558
+`GeoCell(type.Integer).transform(transform.Move, [1, 1]).convert(27098558)` move to the cell north east of 27098558
 
 
 ### Spread
 Get a list of cells from a list of relative positions.
 e.g. Get the north west and west adjacent cells for `tuzey`:
-`GeoType(type.Base32).transform(transform.Spread, [[1, -1], [0, -1]]).convert('tuzey')`
+`GeoCell(type.Base32).transform(transform.Spread, [[1, -1], [0, -1]]).convert('tuzey')`
 
 
 
 ## API
-The API is composed of a chain of methods exposed on a GeoType instance object. The `.convert` method triggers the chain and returns the resulting value.
+The API is composed of a chain of methods exposed on a GeoCell instance object. The `.convert` method triggers the chain and returns the resulting value.
 
-### GeoType(Object toType [, Number numBits])
+### GeoCell(Object toType [, Number numBits])
 Constructor function that returns an object with methods described below.
 `toType`: defines the output type. It can be one of the core types or any object that exposes the `.encode`, `.decode` and `.canDecode` methods
 `numBits`: Number of bits to use for the encoding
@@ -56,7 +56,7 @@ Constructor function that returns an object with methods described below.
 
 
 ### .transform(Function tFunc [, Mixed opts])
-Passes the output of GeoType.convert to a transform function `tFunc` together with an optional `opts` argument that can contain any data the transform function needs for its processing. You can chain transforms by calling the method multiple times. The value will pass through the transforms from top to bottom.
+Passes the output of GeoCell.convert to a transform function `tFunc` together with an optional `opts` argument that can contain any data the transform function needs for its processing. You can chain transforms by calling the method multiple times. The value will pass through the transforms from top to bottom.
 
 
 ### .convert(Mixed value)
@@ -70,22 +70,22 @@ Takes the input value as argument and triggers the API chain
 ### Conversion
 Convert a decimal latlon value to Base32 geohash using 25 bits
 ```JavaScript
-import GeoType, { type } from 'geotype'
+import GeoCell, { type } from 'geocell'
 
 const latLon = { lat: 35.216452, lon: 66.271257 }
 
-let hash = GeoType(type.Base32)
+let hash = GeoCell(type.Base32)
     .from(type.LatLonDec, 25)
     .convert(latLon)
 ```
 
 Convert a 50 bit integer hash to 30 bit integer
 ```JavaScript
-import GeoType, { type } from 'geotype'
+import GeoCell, { type } from 'geocell'
 
 const intHash = 957261837123
 
-let hash = GeoType(type.Integer, 30)
+let hash = GeoCell(type.Integer, 30)
     .from(type.Integer, 50) // integer type always needs to know the number of bits to use for encoding/decoding
     .convert(intHash)
 ```
@@ -95,22 +95,22 @@ let hash = GeoType(type.Integer, 30)
 
 Get the north eastern neighbor of a base32 hash cell
 ```JavaScript
-import GeoType, { type, transform } from 'geotype'
+import GeoCell, { type, transform } from 'geocell'
 
 const hash = 'c9b32e'
 
-let neighbor = GeoType(type.Base32)
+let neighbor = GeoCell(type.Base32)
     .transform(transform.Move, [1, 1])
     .convert(hash)
 ```
 
 Get all adjacent cells for an integer hash
 ```JavaScript
-import GeoType, { type, transform } from 'geotype'
+import GeoCell, { type, transform } from 'geocell'
 
 const hash = 6842736502
 
-let neighbors = GeoType(type.Integer)   // same number of bits as input
+let neighbors = GeoCell(type.Integer)   // same number of bits as input
     .from(type.Integer, 25)
     .transform(transform.Adjacent)
     .convert(hash)
@@ -118,11 +118,11 @@ let neighbors = GeoType(type.Integer)   // same number of bits as input
 
 From a Base32 hash, get the northern and western neighbors of the fifth cell to the east. Convert the output to LatLon decimal.
 ```JavaScript
-import GeoType, { type, transform } from 'geotype'
+import GeoCell, { type, transform } from 'geocell'
 
 const hash = 'ab302j25cj'
 
-let cells = GeoType(type.LatLonDec) // same number of bits as the input
+let cells = GeoCell(type.LatLonDec) // same number of bits as the input
     .from(type.Base32) // The Base32 type always uses 5 bits per character, so you don't need to specify the number of bits
     .transform(transform.Move, [0, 5])
     .transform(transform.Spread, [[1, 0], [-1, 0]])

@@ -22,4 +22,13 @@ Object.defineProperty(exports, 'Spread', {
   }
 });
 
+var _Adjacent = require('./Adjacent');
+
+Object.defineProperty(exports, 'Adjacent', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_Adjacent).default;
+  }
+});
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

@@ -5,7 +5,7 @@ export {
     type,
     transform
 }
-export default GeoType
+export default GeoCell
 
 /**
  * Some transform functions may output an array of bit arrays.
@@ -22,7 +22,7 @@ function runDeep(output, cb, opts) {
         : cb(output, opts)
 }
 
-function GeoType(toType, toBits) {
+function GeoCell(toType, toBits) {
     if (!toType || !toType.encode) {
         throw new Error("Cannot convert to type '" + typeof toType + "'")
     }

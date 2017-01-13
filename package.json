@@ -1,5 +1,5 @@
 {
-  "name": "geotype",
+  "name": "geocell",
   "version": "1.0.0",
   "description": "Geographical location library for JavaScript",
   "main": "./dist/index.js",
