@@ -5,11 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.canDecode = exports.decode = exports.encode = undefined;
 
-var _Integer = require('./Integer');
+var _structure = require('../structure');
 
-var Integer = _interopRequireWildcard(_Integer);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+var _helper = require('../helper');
 
 exports.encode = base32Encode;
 exports.decode = base32Decode;
@@ -24,11 +22,17 @@ var CHAR_BITS = 5;
 * @param  {Array} bits
 * @return {String}
 */
-function base32Encode(bits) {
-    var hash = '';
+function base32Encode(cell, numBits) {
+    numBits = numBits || cell.numBits;
+    var hash = '',
+        charVal = 0;
 
-    for (var i = 0, len = bits.length; i < len; i += CHAR_BITS) {
-        hash += CHAR_MAP[Integer.encode(bits.slice(i, i + CHAR_BITS))];
+    while (--numBits >= 0) {
+        charVal = charVal * 2 + cell.getBit(numBits);
+        if ((cell.numBits - numBits) % 5 === 0) {
+            hash += CHAR_MAP[charVal];
+            charVal = 0;
+        }
     }
 
     return hash;
@@ -43,13 +47,17 @@ function base32Decode(hash) {
     if (!canDecode(hash)) {
         throw "Cannot decode '" + hash + "'. " + "Expected a string containing only characters " + "from the base 32 character map";
     }
-    var bits = [],
-        val = void 0;
+    var cell = (0, _structure.Cell)(),
+        val = void 0,
+        curBit = void 0;
     for (var i = 0; i < hash.length; i++) {
         val = CHAR_MAP.indexOf(hash[i]);
-        bits = bits.concat(Integer.decode(val, CHAR_BITS));
+        curBit = CHAR_BITS;
+        while (--curBit >= 0) {
+            cell.addBit((0, _helper.getBit)(val, curBit));
+        }
     }
-    return bits;
+    return cell;
 }
 
 /**

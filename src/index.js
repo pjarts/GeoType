@@ -1,26 +1,17 @@
-const type = require('./type')
-const transform = require('./transform')
+import * as type from './type'
+import * as transform from './transform'
+import * as structure from './structure'
+import * as constant from './constants'
 
 export {
     type,
-    transform
+    transform,
+    constant
 }
+
 export default GeoCell
 
-/**
- * Some transform functions may output an array of bit arrays.
- * This function looks deep into nested arrays and runs a callback
- * on all arrays that looks like bit arrays
- * @param  {Array} output
- * @param  {Function} cb
- * @param  {Mixed} opts
- * @return {Array}
- */
-function runDeep(output, cb, opts) {
-    return Array.isArray(output[0])
-        ? output.map(val => runDeep(val, cb, opts))
-        : cb(output, opts)
-}
+import { transformStructure } from './helper'
 
 function GeoCell(toType, toBits) {
     if (!toType || !toType.encode) {
@@ -29,11 +20,11 @@ function GeoCell(toType, toBits) {
     let transforms = []
     let fromType = toType, fromBits = toBits
     return {
-        transform(tFunc, opts) {
-            if (typeof tFunc !== 'function') {
-                throw new Error("Expected a transform function, got " + typeof tFunc)
+        transform(trans, opts) {
+            if (typeof trans.transform !== 'function') {
+                throw new Error("Expected a transform object, got " + typeof trans)
             }
-            transforms.push({ func: tFunc, opts: opts })
+            transforms.push({ trans, opts })
             return this
         },
         from(type, bits) {
@@ -45,16 +36,29 @@ function GeoCell(toType, toBits) {
             return this
         },
         convert(value) {
+            console.log(value, 'value')
             if (!fromType.canDecode(value)) {
                 throw new Error("Cannot decode value using type '" + fromType.decode.name + "'. "
                 + "Please specify the correct from type using the .from() method")
             }
-            let output = fromType.decode(value, fromBits)
-            transforms.forEach(trans => {
-                output = runDeep(output, trans.func, trans.opts)
+            let struct = fromType.decode(value, fromBits)
+            const isCell = (struct) => struct._type === structure.Cell
+
+            transforms.forEach(t => {
+                struct = transformStructure(
+                    struct,
+                    t.trans.canTransform || isCell,
+                    (struct) => t.trans.transform(struct, t.opts)
+                )
             })
-            output = runDeep(output, toType.encode, toBits || fromBits)
-            return output
+
+            struct = transformStructure(
+                struct,
+                toType.canEncode || isCell,
+                (struct) => toType.encode(struct, toBits)
+            )
+
+            return structure.Container(struct).render()
         }
     }
 }

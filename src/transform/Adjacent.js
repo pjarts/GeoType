@@ -1,22 +1,16 @@
-export default Adjacent
+export {
+    Adjacent as transform
+}
 
-import Spread from './Spread'
+import * as Spread from './Spread'
+import { DIR } from '../constants'
 
-const positions = [
-    [1, 0] ,     // north
-    [1, 1],      // north east
-    [0, 1],      // east
-    [-1, 1],     // south east
-    [-1, 0],     // south
-    [-1, -1],    // south west
-    [0, -1],     // west
-    [1, -1]      // north west
-]
+const positions = Object.keys(DIR).map(d => DIR[d])
 
 /**
  * Returns all adjacent geo cells for a given array of bits
  * @param {Array} bits
  */
-function Adjacent(bits) {
-    return Spread(bits, positions)
+function Adjacent(cell) {
+    return Spread.transform(cell, positions)
 }

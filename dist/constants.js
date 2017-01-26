@@ -1,11 +1,15 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
-var LAT = exports.LAT = 'lat';
-var LON = exports.LON = 'lon';
-
-// range min/max index
-var R_MIN = exports.R_MIN = 0;
-var R_MAX = exports.R_MAX = 1;
+var DIR = exports.DIR = {
+    N: [0, 1],
+    NE: [1, 1],
+    E: [1, 0],
+    SE: [1, -1],
+    S: [0, -1],
+    SW: [-1, -1],
+    W: [-1, 0],
+    NW: [-1, 1]
+};

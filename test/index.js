@@ -18,4 +18,15 @@ describe('Interface', () => {
     it('should throw an error if trying to convert from an invalid type', () => {
         expect(() => GeoCell(type.Integer).from()).to.throw(Error, /Cannot convert from type/)
     })
+
+    it('should be possible to transform data from a single cell', () => {
+        expect(GeoCell(type.Base32)
+            .transform(transform.Spread, [[2,4], [-3,-1]])
+            .convert('u8zz')
+        ).to.deep.equal(['uc07', 'u8zn'])
+    })
+
+    
+
+
 })

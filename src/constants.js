@@ -1,6 +1,10 @@
-export const LAT = 'lat'
-export const LON = 'lon'
-
-// range min/max index
-export const R_MIN = 0
-export const R_MAX = 1
+export const DIR = {
+    N:  [0, 1],
+    NE: [1, 1],
+    E:  [1, 0],
+    SE: [1, -1],
+    S:  [0, -1],
+    SW: [-1, -1],
+    W:  [-1, 0],
+    NW: [-1, 1]
+}

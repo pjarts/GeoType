@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.canDecode = exports.decode = exports.encode = undefined;
 
-var _constants = require('../constants');
-
 var _helper = require('../helper');
+
+var _structure = require('../structure');
 
 exports.encode = integerEncode;
 exports.decode = integerDecode;
@@ -19,10 +19,13 @@ exports.canDecode = canDecode;
 * @param  {Array} bits
 * @return {Number}
 */
-function integerEncode(bits) {
-    return bits.reduce(function (hash, bit) {
-        return hash * 2 + bit;
-    }, 0);
+function integerEncode(cell, numBits) {
+    numBits = numBits || cell.numBits;
+    var hash = 0;
+    while (--numBits >= 0) {
+        hash = hash * 2 + cell.getBit(numBits);
+    }
+    return hash;
 }
 
 /**
@@ -32,15 +35,11 @@ function integerEncode(bits) {
 * @return {Array}
 */
 function integerDecode(hash, numBits) {
-    if (!canDecode(hash)) {
-        throw 'Cannot decode' + hash + '. Expected an integer.';
-    }
-    numBits = numBits || 52;
-    var bits = [];
+    var cell = (0, _structure.Cell)();
     while (--numBits >= 0) {
-        bits.push((0, _helper.getBit)(hash, numBits));
+        cell.addBit((0, _helper.getBit)(hash, numBits));
     }
-    return bits;
+    return cell;
 }
 
 /**

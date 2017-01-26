@@ -1,13 +1,9 @@
-export default Move
+export {
+    Move as transform
+}
 
-import { bitAdd } from '../helper'
-import { LAT, LON } from '../constants'
-
-function Move(bits, pos) {
-    bits = bits.slice(0)
-
-    bitAdd(bits, pos[0], LAT)
-    bitAdd(bits, pos[1], LON)
-
-    return bits
+function Move(cell, pos) {
+    cell.value[0] += pos[0]
+    cell.value[1] += pos[1]
+    return cell
 }

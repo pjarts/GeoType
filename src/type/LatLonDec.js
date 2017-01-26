@@ -4,12 +4,8 @@ export {
     canDecode
 }
 
-import { LAT, LON, R_MIN, R_MAX } from '../constants'
-
-import {
-    which,
-    getInitRanges
-} from '../helper'
+import { Cell } from '../structure'
+import { getInitRanges } from '../helper'
 
 /**
 * Encode an array of bits into latitude and longitude
@@ -24,19 +20,23 @@ import {
 *     }
 * }]
 */
-function latLonDecEncode(bits) {
-    let range = getInitRanges()
+function latLonDecEncode(cell, numBits) {
+    numBits = numBits || cell.numBits
+    let range = getInitRanges(),
+        i = 0, which
 
-    bits.forEach((bit, i) => splitRange(
-        range[which(i)],
-        range[which(i)][bit]
-    ))
+    while (--numBits >= 0) {
+        which = i++ % 2
+        splitRange(range[which], range[which][cell.getBit(numBits)] )
+    }
 
-    let res = {}
-    for (let r in range) {
-        res[r] = (range[r][R_MIN] + range[r][R_MAX]) / 2
-        res.error = res.error || {}
-        res.error[r] = range[r][R_MAX] - res[r]
+    let res = {
+        lon: (range[0][0] + range[0][1]) / 2,
+        lat: (range[1][0] + range[1][1]) / 2
+    }
+    res.error = {
+        lon: range[0][1] - res.lon,
+        lat: range[1][1] - res.lat
     }
 
     return res
@@ -58,31 +58,28 @@ function latLonDecDecode(latLon, numBits) {
 
     let range = getInitRanges()
 
-    const target = {
-        [LAT]: latLon.lat,
-        [LON]: latLon.lon
-    }
+    const target = [latLon.lon, latLon.lat]
 
-    var bits = [], bit
+    let cell = Cell(), which
 
     for (var i = 0; i < numBits; i++) {
-        bit = splitRange(range[which(i)], target[which(i)])
-        bits.push(bit)
+        which = i % 2
+        cell.addBit(splitRange(range[which], target[which]))
     }
 
-    return bits
+    return cell
 }
 
 function splitRange(range, target) {
-    const avg = (range[R_MIN] + range[R_MAX]) / 2
-    const updateEdge = target > avg ? R_MIN : R_MAX
+    const avg = (range[0] + range[1]) / 2
+    const updateEdge = target > avg ? 0 : 1
     const producedBit = updateEdge === 0 ? 1 : 0
     range[updateEdge] = avg
     return producedBit
 }
 
 function canDecode(value) {
-    value = value || {}
-    return typeof value[LAT] === 'number'
-        && typeof value[LON] === 'number'
+    return value
+        && typeof value.lat === 'number'
+        && typeof value.lon === 'number'
 }

@@ -1,21 +1,13 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _helper = require('../helper');
-
-var _constants = require('../constants');
-
-exports.default = Move;
+exports.transform = Move;
 
 
-function Move(bits, pos) {
-    bits = bits.slice(0);
-
-    (0, _helper.bitAdd)(bits, pos[0], _constants.LAT);
-    (0, _helper.bitAdd)(bits, pos[1], _constants.LON);
-
-    return bits;
+function Move(cell, pos) {
+    cell.value[0] += pos[0];
+    cell.value[1] += pos[1];
+    return cell;
 }

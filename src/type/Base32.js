@@ -4,7 +4,9 @@ export {
     canDecode
 }
 
-import * as Integer from './Integer'
+import { Cell } from '../structure'
+
+import { getBit } from '../helper'
 
 const CHAR_MAP = '0123456789bcdefghjkmnpqrstuvwxyz'
 const CHAR_BITS = 5
@@ -14,11 +16,17 @@ const CHAR_BITS = 5
 * @param  {Array} bits
 * @return {String}
 */
-function base32Encode(bits) {
-    let hash = ''
+function base32Encode(cell, numBits) {
+    numBits = numBits || cell.numBits
+    let hash = '',
+        charVal = 0
 
-    for (var i = 0, len = bits.length; i < len; i += CHAR_BITS) {
-        hash += CHAR_MAP[Integer.encode(bits.slice(i, i + CHAR_BITS))]
+    while (--numBits >= 0) {
+        charVal = charVal * 2 + cell.getBit(numBits)
+        if ((cell.numBits - numBits) % 5 === 0) {
+            hash += CHAR_MAP[charVal]
+            charVal = 0
+        }
     }
 
     return hash
@@ -35,12 +43,15 @@ function base32Decode(hash) {
             + "Expected a string containing only characters "
             + "from the base 32 character map"
     }
-    let bits = [], val
+    let cell = Cell(), val, curBit
     for (var i = 0; i < hash.length; i++) {
         val = CHAR_MAP.indexOf(hash[i])
-        bits = bits.concat(Integer.decode(val, CHAR_BITS))
+        curBit = CHAR_BITS
+        while (--curBit >= 0) {
+            cell.addBit(getBit(val, curBit))
+        }
     }
-    return bits
+    return cell
 }
 
 /**

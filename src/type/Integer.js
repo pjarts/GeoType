@@ -4,17 +4,21 @@ export {
     canDecode
 }
 
-import { LAT, LON } from '../constants'
-
 import { getBit } from '../helper'
+import { Cell } from '../structure'
 
 /**
 * Encode an array of bits into an integer
 * @param  {Array} bits
 * @return {Number}
 */
-function integerEncode(bits) {
-    return bits.reduce((hash, bit) => hash * 2 + bit, 0)
+function integerEncode(cell, numBits) {
+    numBits = numBits || cell.numBits
+    let hash = 0
+    while (--numBits >= 0) {
+        hash = hash * 2 + cell.getBit(numBits)
+    }
+    return hash
 }
 
 /**
@@ -24,15 +28,11 @@ function integerEncode(bits) {
 * @return {Array}
 */
 function integerDecode(hash, numBits) {
-    if (!canDecode(hash)) {
-        throw 'Cannot decode' + hash + '. Expected an integer.'
-    }
-    numBits = numBits || 52
-    let bits = []
+    let cell = Cell()
     while (--numBits >= 0) {
-        bits.push(getBit(hash, numBits))
+        cell.addBit(getBit(hash, numBits))
     }
-    return bits
+    return cell
 }
 
 /**

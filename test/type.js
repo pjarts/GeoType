@@ -1,12 +1,11 @@
 import { expect } from 'chai'
 
-import * as LatLonDec from '../src/type/LatLonDec'
-import * as Base32 from '../src/type/Base32'
-import * as Integer from '../src/type/Integer'
+import * as type from '../src/type'
+
+import { Cell, BBox } from '../src/structure'
 
 describe('Types', () => {
     describe('LatLonDec', () => {
-        const bits = [1,1,0,0,1,0,1,0,0,1,1,1,1,1,1]
         const latLon = {
             lat: 10.546875,
             lon: 78.046875,
@@ -15,36 +14,55 @@ describe('Types', () => {
                 lon: 0.703125
             }
         }
+        let cell, bits = 15
 
-        it('should decode a latLon object', () => {
-            expect(LatLonDec.decode(latLon, bits.length)).to.deep.equal(bits)
+        it('should decode a latLon object to a cell', () => {
+            cell = type.LatLonDec.decode(latLon, bits)
+            expect(cell._type).to.equal(Cell)
         })
 
-        it('should encode into a latLon obect', () => {
-            expect(LatLonDec.encode(bits)).to.deep.equal(latLon)
+        it('should encode a cell into a latLon obect', () => {
+            expect(type.LatLonDec.encode(cell)).to.deep.equal(latLon)
         })
     })
 
     describe('Base32', () => {
-        const bits = [1,1,0,0,1,1,1,0,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0]
+        const bits = 25
         const hash = 'tuzey'
+        let cell
 
-        it('should decode a Base32 hash string', () => {
-            expect(Base32.decode(hash)).to.deep.equal(bits)
+        it('should decode a Base32 hash string into a cell', () => {
+            cell = type.Base32.decode(hash)
+            expect(cell._type).to.equal(Cell)
         })
-        it('should encode into a base 32 string', () => {
-            expect(Base32.encode(bits)).to.equal(hash)
+        it('should encode back to the same hash', () => {
+            expect(type.Base32.encode(cell)).to.equal(hash)
         })
     })
 
     describe('Integer', () => {
-        const bits = [1,1,0,0,1,1,1,0,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0]
+        const bits = 25
         const val = 27098558
-        it('should decode an integer', () => {
-            expect(Integer.decode(val, bits.length)).to.deep.equal(bits)
+        let cell
+        it('should decode an integer into a cell', () => {
+            cell = type.Integer.decode(val, bits)
+            expect(cell._type).to.equal(Cell)
         })
-        it('should encode into an integer', () => {
-            expect(Integer.encode(bits)).to.equal(val)
+        it('should encode back to the same value', () => {
+            expect(type.Integer.encode(cell)).to.equal(val)
+        })
+    })
+
+    describe('BBox', () => {
+        const value = { sw: 2612486, ne: 7124571 }
+        const bits = 40
+        let bbox
+        it('should decode a bounding box object', () => {
+            bbox = type.BBox(type.Integer).decode(value, bits)
+            expect(bbox._type).to.equal(BBox)
+        })
+        it('should encode back to the same value', () => {
+            expect(type.BBox(type.Integer).encode(bbox)).to.deep.equal(value)
         })
     })
 

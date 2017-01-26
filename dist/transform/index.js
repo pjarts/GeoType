@@ -1,34 +1,29 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
+exports.Cover = exports.Move = exports.Spread = exports.Adjacent = undefined;
 
 var _Move = require('./Move');
 
-Object.defineProperty(exports, 'Move', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_Move).default;
-  }
-});
+var Move = _interopRequireWildcard(_Move);
 
 var _Spread = require('./Spread');
 
-Object.defineProperty(exports, 'Spread', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_Spread).default;
-  }
-});
+var Spread = _interopRequireWildcard(_Spread);
 
 var _Adjacent = require('./Adjacent');
 
-Object.defineProperty(exports, 'Adjacent', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_Adjacent).default;
-  }
-});
+var Adjacent = _interopRequireWildcard(_Adjacent);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _Cover = require('./Cover');
+
+var Cover = _interopRequireWildcard(_Cover);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+exports.Adjacent = Adjacent;
+exports.Spread = Spread;
+exports.Move = Move;
+exports.Cover = Cover;
