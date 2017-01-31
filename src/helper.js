@@ -1,31 +1,36 @@
-import { LAT, LON } from './constants'
+import * as structure from './structure';
 
-export function getBit(value, bit) {
-    if (bit > 30) {
-        return getBit(value / Math.pow(2, bit - 30), 30)
-    }
-    return (value & 1 << bit) === 0 ? 0 : 1
-}
+export const getBit = (value, bit) => (value / (2 ** bit)) & 0x01;
 
-export function getInitRanges() {
-    return [ [-180, 180], [-90, 90] ]
-}
+export const getInitRanges = () => [[-180, 180], [-90, 90]];
 
 /**
- * Run callback on all structures in a tree where test returns true
- * @param  {Object}   root
- * @param  {Function}   test
- * @param  {Function} cb
- * @return {Mixed}
- */
-export function transformStructure(root, matchStruct, cb) {
-    if (matchStruct(root) === true) {
-        return cb(root)
+* Run callback on all structures in a tree where test returns true
+* @param  {Object}   root
+* @param  {Function}   test
+* @param  {Function} cb
+* @return {Mixed}
+*/
+export const transformStructure = (root, matchStruct, cb) => {
+  if (matchStruct(root) === true) {
+    return cb(root);
+  }
+  if (typeof root.getContainers === 'function') {
+    const containers = root.getContainers();
+    for (let i = 0; i < containers.length; i += 1) {
+      containers[i].structure = transformStructure(
+        containers[i].structure, matchStruct, cb,
+      );
     }
-    if (typeof root.getContainers === 'function') {
-        root.getContainers().forEach(container => {
-            container.structure = transformStructure(container.structure, matchStruct, cb)
-        })
-    }
-    return root
-}
+  }
+  return root;
+};
+
+export const isCell = struct => struct.constructor === structure.Cell;
+
+export default {
+  getBit,
+  getInitRanges,
+  transformStructure,
+  isCell,
+};

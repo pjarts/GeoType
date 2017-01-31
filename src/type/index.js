@@ -1,11 +1,4 @@
-import * as Base32 from './Base32'
-import * as Integer from './Integer'
-import * as LatLonDec from './LatLonDec'
-import BBox from './BBox'
-
-export {
-    Base32,
-    Integer,
-    LatLonDec,
-    BBox,
-}
+export { default as Base32 } from './Base32';
+export { default as Integer } from './Integer';
+export { default as LatLonDec } from './LatLonDec';
+export { default as BBox } from './BBox';

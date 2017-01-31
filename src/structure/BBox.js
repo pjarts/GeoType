@@ -1,26 +1,21 @@
-export default BBox
+import Container from './Container';
 
-import Container from './Container'
+class BBox {
+  constructor(value) {
+    this.value = {
+      sw: new Container(value.sw),
+      ne: new Container(value.ne),
+    };
+  }
+  getContainers() {
+    return [this.value.sw, this.value.ne];
+  }
+  render() {
+    return {
+      sw: this.value.sw.render(),
+      ne: this.value.ne.render(),
+    };
+  }
+}
 
-function BBox(value) {
-    let bbox = Object.create(BBox.proto)
-    bbox.value = {
-        sw: Container(value.sw),
-        ne: Container(value.ne)
-    }
-    Object.defineProperty(bbox, '_type', {
-        get() { return BBox }
-    })
-    return bbox
-}
-BBox.proto = {
-    getContainers() {
-        return [ this.value.sw, this.value.ne ]
-    },
-    render() {
-        return {
-            sw: this.value.sw.render(),
-            ne: this.value.ne.render()
-        }
-    }
-}
+export default BBox;

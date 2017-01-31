@@ -1,9 +1,10 @@
-export {
-    Move as transform
-}
+const Move = {
+  transform(cell, pos) {
+    const newCell = cell.clone();
+    newCell.value[0] += pos[0];
+    newCell.value[1] += pos[1];
+    return newCell;
+  },
+};
 
-function Move(cell, pos) {
-    cell.value[0] += pos[0]
-    cell.value[1] += pos[1]
-    return cell
-}
+export default Move;

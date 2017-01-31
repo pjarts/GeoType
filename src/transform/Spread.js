@@ -1,11 +1,12 @@
-export {
-    Spread as transform
-}
+import Move from './Move';
+import { List } from '../structure';
 
-import * as Move from './Move'
-import { List, Cell } from '../structure'
+const Spread = {
+  transform(cell, positions = []) {
+    return new List(
+      positions.map(pos => Move.transform(cell.clone(), pos)),
+    );
+  },
+};
 
-function Spread(cell, positions) {
-    positions = positions || []
-    return List(positions.map(pos => Move.transform(Cell().from(cell), pos)))
-}
+export default Spread;

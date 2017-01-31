@@ -1,28 +1,26 @@
-export {
-    Cover as transform,
-    canTransform
-}
+import { Cell, List, BBox } from '../structure';
 
-import { Cell, List, BBox } from '../structure'
-
-function Cover(bbox) {
-    const swCell = bbox.value.sw.structure
-    const neCell = bbox.value.ne.structure
-    let cell = Cell().from(swCell)
-    let list = List()
+const Cover = {
+  transform(bbox) {
+    const swCell = bbox.value.sw.structure;
+    const neCell = bbox.value.ne.structure;
+    const cell = swCell.clone();
+    const list = new List();
     while (cell.lon <= neCell.lon && cell.lat <= neCell.lat) {
-        list.addCell(Cell().from(cell))
-        cell.lon++
-        if (cell.lon > neCell.lon) {
-            cell.lon = swCell.lon
-            cell.lat++
-        }
+      list.addCell(cell.clone());
+      cell.lon += 1;
+      if (cell.lon > neCell.lon) {
+        cell.lon = swCell.lon;
+        cell.lat += 1;
+      }
     }
-    return list
-}
+    return list;
+  },
+  canTransform(struct) {
+    return struct.constructor === BBox
+      && struct.value.sw.structure.constructor === Cell
+      && struct.value.ne.structure.constructor === Cell;
+  },
+};
 
-function canTransform(structure) {
-    return structure._type === BBox
-        && structure.value.sw.structure._type === Cell
-        && structure.value.ne.structure._type === Cell
-}
+export default Cover;

@@ -1,64 +1,79 @@
-import * as type from './type'
-import * as transform from './transform'
-import * as structure from './structure'
-import * as constant from './constants'
+import * as type from './type';
+import * as transform from './transform';
+import { Container } from './structure';
+import * as constant from './constants';
+import validate from './validate';
+import { transformStructure, isCell } from './helper';
+
+class GeoCell {
+  constructor(config = {}) {
+    this.config = config;
+    this.config.transforms = config.transforms || [];
+  }
+  clone() {
+    const clone = new GeoCell(Object.assign({}, this.config));
+    clone.config.transforms = clone.config.transforms.slice();
+    return clone;
+  }
+  from(fromType, fromBits) {
+    const err = validate.type(fromType);
+    if (err) {
+      err.message = `Invalid from-type. ${err.message}`;
+      throw err;
+    }
+    this.config.fromType = fromType;
+    this.config.fromBits = fromBits;
+    return this;
+  }
+  to(toType, toBits) {
+    const err = validate.type(toType);
+    if (err) {
+      err.message = `Invalid to-type. ${err.message}`;
+      throw err;
+    }
+    this.config.toType = toType;
+    this.config.toBits = toBits;
+    return this;
+  }
+  transform(trans, opts) {
+    const err = validate.transform(trans);
+    if (err) {
+      err.message = `Invalid transform object. ${err.message}`;
+      throw err;
+    }
+    this.config.transforms.push(Object.assign({ opts }, trans));
+    return this;
+  }
+  convert(value) {
+    const c = this.config;
+    const fromType = c.fromType || c.toType;
+    const fromBits = c.fromBits || c.toBits;
+    const toType = c.toType || c.fromType;
+    const toBits = c.toBits || c.fromBits;
+    // decode
+    let output = fromType.decode(value, fromBits);
+    // transform
+    c.transforms.forEach((t) => {
+      output = transformStructure(
+        output,
+        t.canTransform || isCell,
+        structure => t.transform(structure, t.opts),
+      );
+    });
+    // encode
+    output = transformStructure(
+      output,
+      toType.canEncode || isCell,
+      structure => toType.encode(structure, toBits),
+    );
+    return new Container(output).render();
+  }
+}
+
+export default GeoCell;
 
 export {
-    type,
-    transform,
-    constant
-}
-
-export default GeoCell
-
-import { transformStructure } from './helper'
-
-function GeoCell(toType, toBits) {
-    if (!toType || !toType.encode) {
-        throw new Error("Cannot convert to type '" + typeof toType + "'")
-    }
-    let transforms = []
-    let fromType = toType, fromBits = toBits
-    return {
-        transform(trans, opts) {
-            if (typeof trans.transform !== 'function') {
-                throw new Error("Expected a transform object, got " + typeof trans)
-            }
-            transforms.push({ trans, opts })
-            return this
-        },
-        from(type, bits) {
-            if (!type || !type.decode) {
-                throw new Error("Cannot convert from type '" + typeof type + "'")
-            }
-            fromType = type
-            fromBits = bits || fromBits
-            return this
-        },
-        convert(value) {
-            console.log(value, 'value')
-            if (!fromType.canDecode(value)) {
-                throw new Error("Cannot decode value using type '" + fromType.decode.name + "'. "
-                + "Please specify the correct from type using the .from() method")
-            }
-            let struct = fromType.decode(value, fromBits)
-            const isCell = (struct) => struct._type === structure.Cell
-
-            transforms.forEach(t => {
-                struct = transformStructure(
-                    struct,
-                    t.trans.canTransform || isCell,
-                    (struct) => t.trans.transform(struct, t.opts)
-                )
-            })
-
-            struct = transformStructure(
-                struct,
-                toType.canEncode || isCell,
-                (struct) => toType.encode(struct, toBits)
-            )
-
-            return structure.Container(struct).render()
-        }
-    }
-}
+  constant,
+  type,
+  transform,
+};

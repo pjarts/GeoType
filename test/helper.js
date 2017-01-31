@@ -15,35 +15,35 @@ describe('Helper', () => {
     })
 
     describe('transformStructure', () => {
-        const getStructure = () => List([
-            BBox({ sw: Cell([1,1,0,0,1]), ne: Cell([1,1,0,1,1])}),
-            BBox({
-                sw: List([Cell([0,0,1,1,0]), Cell([0,1,1,0,1])]),
-                ne: List([Cell([0,0,0,1,0]), Cell([0,0,1,0,0])]),
+        const getStructure = () => new List([
+            new BBox({ sw: new Cell([1,1,0,0,1]), ne: new Cell([1,1,0,1,1])}),
+            new BBox({
+                sw: new List([new Cell([0,0,1,1,0]), new Cell([0,1,1,0,1])]),
+                ne: new List([new Cell([0,0,0,1,0]), new Cell([0,0,1,0,0])]),
             })
         ])
 
         it('should be possible to run transform functions on cells', () => {
-            let container = Container(getStructure())
+            let container = new Container(getStructure())
             container.structure = transformStructure(
                 container.structure,
-                (struct) => struct._type === Cell,
-                (cell) => cell.getBits().reduce((prev, cur) => prev + cur)
+                (struct) => struct.constructor === Cell,
+                (cell) => cell.lat + cell.lon
             )
             expect(container.render()).to.deep.equal([
-                { sw: 3, ne: 4 },
+                { sw: 7, ne: 8 },
                 {
-                    sw: [ 2, 3 ],
-                    ne: [ 1, 1 ]
+                    sw: [ 3, 5 ],
+                    ne: [ 1, 2 ]
                 }
             ])
         })
 
         it('should be possible to run transform functions on any matching structure hierarchy', () => {
-            let container = Container(getStructure())
+            let container = new Container(getStructure())
             container.structure = transformStructure(
                 container.structure,
-                (struct) => struct._type === BBox && struct.value.sw.structure._type === List,
+                (struct) => struct.constructor === BBox && struct.value.sw.structure.constructor === List,
                 (bbox) => "where's the bbox?"
             )
             let result = container.render()

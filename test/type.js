@@ -18,7 +18,7 @@ describe('Types', () => {
 
         it('should decode a latLon object to a cell', () => {
             cell = type.LatLonDec.decode(latLon, bits)
-            expect(cell._type).to.equal(Cell)
+            expect(cell.constructor).to.equal(Cell)
         })
 
         it('should encode a cell into a latLon obect', () => {
@@ -33,7 +33,7 @@ describe('Types', () => {
 
         it('should decode a Base32 hash string into a cell', () => {
             cell = type.Base32.decode(hash)
-            expect(cell._type).to.equal(Cell)
+            expect(cell.constructor).to.equal(Cell)
         })
         it('should encode back to the same hash', () => {
             expect(type.Base32.encode(cell)).to.equal(hash)
@@ -46,7 +46,7 @@ describe('Types', () => {
         let cell
         it('should decode an integer into a cell', () => {
             cell = type.Integer.decode(val, bits)
-            expect(cell._type).to.equal(Cell)
+            expect(cell.constructor).to.equal(Cell)
         })
         it('should encode back to the same value', () => {
             expect(type.Integer.encode(cell)).to.equal(val)
@@ -59,7 +59,7 @@ describe('Types', () => {
         let bbox
         it('should decode a bounding box object', () => {
             bbox = type.BBox(type.Integer).decode(value, bits)
-            expect(bbox._type).to.equal(BBox)
+            expect(bbox.constructor).to.equal(BBox)
         })
         it('should encode back to the same value', () => {
             expect(type.BBox(type.Integer).encode(bbox)).to.deep.equal(value)
