@@ -1,36 +1,31 @@
-import * as structure from './structure';
+/* @flow */
+import Cell from './Cell'
 
-export const getBit = (value, bit) => (value / (2 ** bit)) & 0x01;
+import type { Bit, Range } from './'
+import type { Structure } from './structure'
 
-export const getInitRanges = () => [[-180, 180], [-90, 90]];
+export const getBit = (value: number, bit: number): Bit => (value / (2 ** bit)) & 0x01
+export const getInitRanges = (): [Range, Range] => [[-180, 180], [-90, 90]]
 
 /**
 * Run callback on all structures in a tree where test returns true
-* @param  {Object}   root
-* @param  {Function}   test
-* @param  {Function} cb
-* @return {Mixed}
 */
-export const transformStructure = (root, matchStruct, cb) => {
-  if (matchStruct(root) === true) {
-    return cb(root);
+export const transformStructure = (
+  root: any,
+  matchVal: (val: any) => boolean,
+  processVal: (val: any) => mixed,
+): mixed => {
+  if (matchVal(root) === true) {
+    return processVal(root)
   }
-  if (typeof root.getContainers === 'function') {
-    const containers = root.getContainers();
-    for (let i = 0; i < containers.length; i += 1) {
-      containers[i].structure = transformStructure(
-        containers[i].structure, matchStruct, cb,
-      );
-    }
+  if (typeof root.map === 'function') {
+    root.map((child) => transformStructure(child, matchVal, processVal))
   }
-  return root;
-};
-
-export const isCell = struct => struct.constructor === structure.Cell;
+  return root
+}
 
 export default {
   getBit,
   getInitRanges,
-  transformStructure,
-  isCell,
-};
+  transformStructure
+}

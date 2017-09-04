@@ -6,11 +6,11 @@ export const DIR = {
   S: [0, -1],
   SW: [-1, -1],
   W: [-1, 0],
-  NW: [-1, 1],
-};
+  NW: [-1, 1]
+}
 
 const constants = {
-  DIR,
-};
+  DIR
+}
 
-export default constants;
+export default constants

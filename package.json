@@ -1,23 +1,57 @@
 {
   "name": "geocell",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Geographical location library for JavaScript",
   "main": "./dist/index.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register",
     "build": "babel src/index.js --out-dir dist",
-    "postinstall": "npm run build"
+    "postinstall": "npm run build",
+    "check:types": "flow check",
+    "check:style": "standard",
+    "flow": "flow",
+    "lint": "eslint -c .eslintrc src/",
+    "document": "jsdoc -c jsdoc.json",
+    "esdoc": "esdoc -h -c .esdoc.json"
   },
   "author": "per@pjarts.se",
   "license": "ISC",
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.21.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-latest": "^6.16.0",
     "chai": "^3.5.0",
-    "eslint": "^3.14.1",
+    "docdash": "^0.4.0",
+    "esdoc": "^1.0.2",
+    "esdoc-flow-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-config-standard-flow": "^1.0.1",
+    "eslint-plugin-flow-vars": "^0.5.0",
+    "eslint-plugin-flowtype": "^2.30.0",
     "eslint-plugin-import": "^2.2.0",
-    "mocha": "^3.2.0"
+    "flow-bin": "^0.53.1",
+    "jsdoc": "^3.5.4",
+    "jsdoc-babel": "^0.3.0",
+    "mocha": "^3.2.0",
+    "standard": "^10.0.3"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "plugins": [
+      "flowtype"
+    ],
+    "ignore": [
+      "**/out/",
+      "**/dist/"
+    ]
+  },
+  "dependencies": {
+    "flow-bin": "^0.53.1"
   }
 }

@@ -1,31 +1,65 @@
 GeoCell
 =======
 
-Super flexible JavaScript library for geographical location cell calculation and type conversion
+Swiss army knife for geocell calculation and type conversion.
 
-## API
-The API is composed of a chain of methods exposed on a GeoCell instance object. The `.convert` method triggers the chain and returns the resulting value.
+## Usage
 
-### GeoCell(Object toType [, Number numBits])
-Constructor function that returns an object with methods described below.
-`toType`: defines the output type. It can be one of the core types or any object that exposes the `.encode`, `.decode` and `.canDecode` methods
-`numBits`: Number of bits to use for the encoding
+Convert decimal latlon into a 30 bit base 32 hash string
+```JavaScript
+import GeoCell, { type } from 'geocell'
+GeoCell().to(type.Base32)
+  .from(type.LatLonDec, 30)
+  .convert({ lat: 32.5471, lon: 12.4263})
+```
 
+Reduce 40 bit integer hash to 20 bit
+```JavaScript
+import GeoCell, { type } from 'geocell'
+GeoCell().to(type.Integer, 20)
+  .from(type.Integer, 40)
+  .convert(9248612465)
+```
 
-### .from(Object fromType, [, Number numBits])
-`fromType`: If the output and input types differ you need to specify the input type. Can be one of the core types or any object with `.encode`, `.decode` and `.canDecode` methods
-`numBits`: Number of bits to use for the decoding
+Get all adjacent base 32 hashes for a 30 bit decimal latlon value
+```JavaScript
+import GeoCell, { type, transform } from 'geocell'
+GeoCell().to(type.Base32)
+  .from(type.LatLonDec, 30)
+  .transform(transform.Adjacent)
+  .convert({ lat: 123.1274823, 11.7236252 })
+```
 
+### GeoCell(_config_)
+The constructor function takes one optional config argument. Usually this is omitted and the config set through the prototype methods instead.
 
-### .transform(Function tFunc [, Mixed opts])
-Passes the output of GeoCell.convert to a transform function `tFunc` together with an optional `opts` argument that can contain any data the transform function needs for its processing. You can chain transforms by calling the method multiple times. The value will pass through the transforms from top to bottom.
+### GeoCell.config
+<dl>
+  <dt>**fromType**</dt>
+  <dd>The type to use for decoding the input value. Defaults to `toType` if undefined.</dd>
+</dl>
+__fromType__: The type to use for decoding the input value. Defaults to `toType` if undefined.
+__fromBits__: Number of bits to use for decoding. Defaults to `toBits` if undefined.
+__toType__: The type to use for encoding the final value. Defaults to `fromBits` if undefined.
+__toBits__: Number of bits to use for encoding. Defaults to `fromBits` if undefined.
+__transforms__: An array of transforms to run the input value through. Will be applied in ascending order.
 
+### GeoCell.prototype.clone()
+Returns a new GeoCell instance with a copy of the config
 
-### .convert(Mixed value)
-Takes the input value as argument and triggers the API chain
+### GeoCell.prototype.convert(_value_)
+Takes an input value and decodes it using the from type, runs it through all configured transforms and encodes it using the selected to type. Returns the result.
+
+### GeoCell.prototype.from(_fromType_, [, _fromBits_])
+Sets `fromType` and `fromBits` on the config object.
+Returns `this`
+
+### GeoCell.prototype.transform(Object transform [, Mixed opts])
+Appends a transform to the config's `transforms` array together with an optional second argument that will be passed to the transform function on runtime.
+
 
 ## Types
-Each type is responsible for decoding from its preferred format to a Structure object and encoding in the reverse direction.
+Each type is responsible for decoding from its preferred format to a Structure object (usually a `Cell`) and encoding in the reverse direction.
 There are a few built in types but if they don't fit your purpose you can easily use your own.
 
 ### LatLonDec
@@ -37,7 +71,7 @@ A geohash in the form of an integer number. Needs to know the number of bits use
 example: `27098558`
 
 ### Base32
-A geohash compiled of characters from a base 32 alphabet. Each character represents 5 bits
+A geohash compiled of characters from a base 32 alphabet. Each character represents 5 bits so the decode function will know how many bits to use even if you don't specify it specifically.
 example: `tuzey`
 
 ### BBox
@@ -49,12 +83,12 @@ Transforms are used to transform the output of a decoded type before it reaches 
 
 ### Move
 Move to a cell at a given relative position
-`GeoCell(type.Integer).transform(transform.Move, [1, 1]).convert(27098558)` move to the cell north east of 27098558
+`GeoCell().to(type.Integer, 20).transform(transform.Move, [1, 1]).convert(27098558)` move to the cell north east of 27098558
 
 ### Spread
 Get a list of cells from a list of relative positions.
 e.g. Get the north west and west adjacent cells for `tuzey`:
-`GeoCell(type.Base32).transform(transform.Spread, [[-1, 1], [-1, 0]]).convert('tuzey')`
+`GeoCell().(type.Base32).transform(transform.Spread, [[-1, 1], [-1, 0]]).convert('tuzey')`
 
 ### Cover
 Get a list of cells that cover a given boundary box.

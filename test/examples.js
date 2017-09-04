@@ -15,7 +15,7 @@ describe('Examples', () => {
 
     it('should "Convert a 50 bit integer hash to 30 bit integer"', () => {
       const intHash = 957261837123
-
+      debugger
       let hash = new GeoCell().to(type.Integer, 30)
       .from(type.Integer, 50) // integer type always needs to know the number of bits to use for encoding/decoding
       .convert(intHash)
@@ -76,7 +76,6 @@ describe('Examples', () => {
         }
       ])
     })
-
 
     it('should "Get a list of base32 hashes (20 bits) that cover the given decimal LatLon boundary box."', () => {
       const bbox = {

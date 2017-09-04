@@ -1,19 +1,33 @@
-import Container from './Container';
+/* @flow */
 
-class List {
-  constructor(value) {
-    this.value = value ? value.map(v => new Container(v)) : [];
+import Simple from './Simple'
+
+/** List structure **/
+class List extends Simple {
+  value: Array<any>
+  constructor (value?: Array<any>) {
+    super()
+    this.value = Array.isArray(value) ? value.slice() : []
   }
-  getContainers() {
-    return this.value;
+  /**
+   * Add a Cell to the list
+   */
+  push (structure: any): List {
+    this.value.push(structure)
+    return this
   }
-  addCell(cell) {
-    this.value.push(new Container(cell));
-    return this;
+  map (transform: Function) {
+    this.value = this.value.map(transform)
   }
-  render() {
-    return this.value.map(container => container.render());
+  getChildren (): Array<any> {
+    return this.value
+  }
+  /**
+   * Render into an array
+   */
+  render (): Array<any> {
+    return this.getChildren().map(child => this.renderChild(child))
   }
 }
 
-export default List;
+export default List
