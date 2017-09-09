@@ -11,40 +11,9 @@ export interface Type<E, D> {
   canDecode: (val: any) => boolean
 }
 
-export type Bit = 1 | 0
-
 /**
- * Types are responsible for decoding data into a [Structure] object and encoding
- * in the reverse direction.
- * @interface Type
+ * @module types
  */
-
-/**
- * @function
- * @name  Type#encode
- * @param {Cell} cell Cell to encode
- * @returns {any} Encoded value
-*/
-
-/**
- * @function
- * @name  Type#decode
- * @param {any} value Value to decode
- * @returns {Cell}
-*/
-
-/**
- * @function
- * @name Type#canDecode
- * @param {Structure | Cell} structure
- * @returns {boolean}
- */
-
-/**
- * Type Module
- * @module type
- */
-
 export {
   BBox,
   Base32,

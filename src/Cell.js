@@ -19,7 +19,7 @@ class Cell {
   numBits: number
   /**
    * Create a Cell instance
-   * @param {[number, number]} [value=[0, 0]] Pair of integer values representing the longitude and latitude values of the cell
+   * @param {Array<number>} [value=[0, 0]] Pair of integer values representing the longitude and latitude values of the cell
    * @param {number} [numBits=0] Number of bits used for interpreting the value
    */
   constructor (val?: [number, number] = [0, 0], numBits?: number = 0) {

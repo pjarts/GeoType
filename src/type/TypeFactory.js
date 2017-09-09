@@ -2,10 +2,18 @@ import Cell from '../Cell'
 
 import type { Type } from './'
 /**
+ * @module types/default
+ */
+/**
  * Default type that all other types inherit from
- * @type {Type}
+ * @lends module:types/default
  */
 const Default: Type<null, Cell> = {
+  /**
+   * Encode some data
+   * @param  {} data
+   * @return {null}
+   */
   encode: (data) => null,
   decode: (value) => new Cell(),
   canEncode: (obj) => obj.constructor === Cell,

@@ -13,7 +13,7 @@ import { transformStructure } from './helper'
 /**
  * @typedef {1|0} Bit
  */
-export type Bit = number
+export type Bit = 1 | 0
 
 /**
  * @typedef {Array<number>} Range
@@ -42,7 +42,7 @@ type GeoCellConfig = {
 class GeoCell {
   /**
    * @private
-   * @type {[type]}
+   * @type {GeoCellConfig}
    */
   config: GeoCellConfig
   /**

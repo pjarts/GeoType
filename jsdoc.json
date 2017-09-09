@@ -1,0 +1,12 @@
+{
+	"plugins": [
+		"jsdoc-babel"
+	],
+	"source": {
+		"include": ["src"],
+		"includePattern": ".+\\.js$"
+	},
+	"opts": {
+		"template": "./node_modules/minami"
+	}
+}

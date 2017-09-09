@@ -1,18 +1,20 @@
 {
   "name": "geocell",
   "version": "1.2.0",
-  "description": "Geographical location library for JavaScript",
+  "description": "Geographical position conversion library for JavaScript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pjarts/geocell"
+  },
   "main": "./dist/index.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register",
-    "build": "babel src/index.js --out-dir dist",
-    "postinstall": "npm run build",
+    "build": "babel src --out-dir dist",
+    "prepublish": "npm run build",
     "check:types": "flow check",
     "check:style": "standard",
     "flow": "flow",
-    "lint": "eslint -c .eslintrc src/",
-    "document": "jsdoc -c jsdoc.json",
-    "esdoc": "esdoc -h -c .esdoc.json"
+    "lint": "eslint -c .eslintrc src/"
   },
   "author": "per@pjarts.se",
   "license": "ISC",
@@ -38,6 +40,7 @@
     "flow-bin": "^0.53.1",
     "jsdoc": "^3.5.4",
     "jsdoc-babel": "^0.3.0",
+    "minami": "^1.2.3",
     "mocha": "^3.2.0",
     "standard": "^10.0.3"
   },

@@ -12,9 +12,7 @@ type BBoxType<E, D> = (type: Type<E, D>) => Type<BBoxLiteral<E>, BBoxStructure<D
 /**
  * Takes a [Type] as argument and wraps its methods in order to work with
  * a bounding box object literal `{ sw: {*}, ne: {*} }`
- * @memberOf module:type
- * @param {Type} type The [Type] that should be used for encoding/decoding the sw and ne values
- * @returns {Type}
+ * @lends module:type
  */
 const BBox: BBoxType<any, Cell> = (type) => TypeFactory({
   encode: (bbox: BBoxStruct, bits) => ({
