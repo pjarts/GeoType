@@ -53,8 +53,5 @@
       "**/out/",
       "**/dist/"
     ]
-  },
-  "dependencies": {
-    "flow-bin": "^0.53.1"
   }
 }
